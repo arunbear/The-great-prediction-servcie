@@ -30,4 +30,15 @@ class PredictionServiceTest {
 
         verify(predictionRepository).save(any(Prediction.class));
     }
+
+    @Test
+    void uses_a_repository_to_find_a_prediction() {
+        // given ...
+        long predictionId = 1L;
+
+        // when ...
+        predictionService.findById(predictionId);
+
+        verify(predictionRepository).findById(predictionId);
+    }
 }

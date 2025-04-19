@@ -6,6 +6,8 @@ import com.example.repository.PredictionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PredictionService {
     final PredictionRepository predictionRepository;
@@ -20,5 +22,9 @@ public class PredictionService {
         prediction.setPredictedWinner(predictionDto.predictedWinner());
 
         return predictionRepository.save(prediction);
+    }
+
+    public Optional<Prediction> findById(long predictionId) {
+        return predictionRepository.findById(predictionId);
     }
 }

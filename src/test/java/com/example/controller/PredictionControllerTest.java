@@ -13,7 +13,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,6 +49,18 @@ class PredictionControllerTest {
             .andExpect(jsonPath("$.predictionId").value(prediction.getId()))
             .andExpect(jsonPath("$.predictedWinner").value(prediction.getPredictedWinner()))
         ;
+
+    }
+
+    @Test
+    void uses_predictionService_to_find_a_prediction() throws Exception {
+        // given ...
+        long predictionId = 1;
+
+        // when ...
+        mockMvc.perform( get("/prediction/%s".formatted(predictionId)) );
+
+        verify(predictionService).findById(predictionId);
 
     }
 }
