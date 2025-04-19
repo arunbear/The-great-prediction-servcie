@@ -25,17 +25,15 @@ public class PredictionController {
     public ResponseEntity<PredictionDto> create(@RequestBody PredictionDto predictionDto) {
 
         var savedPrediction = predictionService.save(predictionDto);
-        var createdPrediction = predictionDto
-            .withPredictionId(savedPrediction.getId())
-            .withPredictedWinner(savedPrediction.getPredictedWinner())
-            ;
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{productId}")
-                .buildAndExpand(createdPrediction.predictionId())
+                .buildAndExpand(savedPrediction.getId())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(createdPrediction);
+        return ResponseEntity
+                .created(uri)
+                .body(savedPrediction.toDto());
     }
 
 }

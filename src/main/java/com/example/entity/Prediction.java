@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.example.dto.PredictionDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,4 +19,11 @@ public class Prediction {
 
     @Column(nullable = false)
     private String predictedWinner;
+
+    public PredictionDto toDto() {
+        return PredictionDto.builder()
+                .predictionId(id)
+                .predictedWinner(predictedWinner)
+                .build();
+    }
 }
