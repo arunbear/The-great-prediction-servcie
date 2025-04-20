@@ -9,6 +9,7 @@ import lombok.With;
 public record PredictionDto(
         long predictionId,
         long userId,
+        long matchId,
 
         @NotBlank(message = "must be present")
         String predictedWinner

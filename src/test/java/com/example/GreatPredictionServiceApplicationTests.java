@@ -48,6 +48,7 @@ class GreatPredictionServiceApplicationTests {
         var predictionToCreate = new JSONObject()
                 .put("predictedWinner", "Brentford")
                 .put("userId", 1)
+                .put("matchId", 1)
                 ;
 
         var creationResponse = createPrediction(predictionToCreate);
@@ -70,6 +71,8 @@ class GreatPredictionServiceApplicationTests {
                 .isEqualTo(predictionToCreate.getString("predictedWinner"));
         then(retrievedPredictionDto.userId())
                 .isEqualTo(predictionToCreate.getLong("userId"));
+        then(retrievedPredictionDto.matchId())
+                .isEqualTo(predictionToCreate.getLong("matchId"));
     }
 
     @Test
