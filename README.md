@@ -25,6 +25,18 @@ Assume that
 
 ### Step 5
 
+Return all predictions for a given user
+
+### Step 6
+
+Matches have a start time
+
+### Step 7
+
+Predictions can be updated, but only if the related match hasn't started yet.
+
+### Step 8
+
 A match is between two teams
 
 Assume that
