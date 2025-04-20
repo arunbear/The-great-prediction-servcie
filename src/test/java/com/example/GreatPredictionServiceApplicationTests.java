@@ -53,7 +53,8 @@ class GreatPredictionServiceApplicationTests {
 
         var creationResponse = createPrediction(predictionToCreate);
 
-        // now use the location header to retrieve it
+        // Now use the location header to retrieve it.
+        // We don't know the id in advance, so the controller is not likely to be faking a response.
         PredictionDto retrievedPredictionDto = RestAssured
                 .given()
                 .log().all()
