@@ -8,6 +8,7 @@ import lombok.With;
 @With
 public record PredictionDto(
         long predictionId,
+        long userId,
 
         @NotBlank(message = "must be present")
         String predictedWinner

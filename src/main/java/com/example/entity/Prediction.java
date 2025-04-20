@@ -20,10 +20,15 @@ public class Prediction {
     @Column(nullable = false)
     private String predictedWinner;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public PredictionDto toDto() {
         return PredictionDto.builder()
                 .predictionId(id)
                 .predictedWinner(predictedWinner)
+                .userId(user.getId())
                 .build();
     }
 }
