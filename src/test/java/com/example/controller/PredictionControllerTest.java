@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.dto.PredictionDto;
 import com.example.entity.Prediction;
+import com.example.entity.User;
 import com.example.service.PredictionService;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -33,9 +34,11 @@ class PredictionControllerTest {
     @Test
     void uses_predictionService_to_create_a_prediction() throws Exception {
         // given ...
-        var prediction = new Prediction();
-        prediction.setId(1L);
-        prediction.setPredictedWinner("ABC");
+        var prediction = Prediction.builder()
+                .id(1L)
+                .predictedWinner("ABC")
+                .user(new User(1L))
+                .build();
 
         when(predictionService.save(any(PredictionDto.class)))
             .thenReturn(prediction);
