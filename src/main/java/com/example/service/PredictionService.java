@@ -1,8 +1,10 @@
 package com.example.service;
 
 import com.example.dto.PredictionDto;
+import com.example.entity.Match;
 import com.example.entity.Prediction;
 import com.example.entity.User;
+import com.example.repository.MatchRepository;
 import com.example.repository.PredictionRepository;
 import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,21 +16,28 @@ import java.util.Optional;
 public class PredictionService {
     final PredictionRepository predictionRepository;
     final UserRepository userRepository;
+    final MatchRepository matchRepository;
 
     @Autowired
-    public PredictionService(PredictionRepository predictionRepository, UserRepository userRepository) {
+    public PredictionService(PredictionRepository predictionRepository, UserRepository userRepository, MatchRepository matchRepository) {
         this.predictionRepository = predictionRepository;
         this.userRepository = userRepository;
+        this.matchRepository = matchRepository;
     }
 
     public Prediction save(PredictionDto predictionDto) {
-        // find the user
+        // find related user
         Optional<User> users = userRepository.findById(predictionDto.userId());
         User user = users.orElseThrow(); // todo more appropriate error type
+
+        // find related match
+        Optional<Match> matches = matchRepository.findById(predictionDto.userId());
+        Match match = matches.orElseThrow(); // todo more appropriate error type
 
         Prediction prediction = new Prediction();
         prediction.setPredictedWinner(predictionDto.predictedWinner());
         prediction.setUser(user);
+        prediction.setMatch(match);
 
         return predictionRepository.save(prediction);
     }

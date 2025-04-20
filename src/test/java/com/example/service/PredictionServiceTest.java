@@ -1,8 +1,10 @@
 package com.example.service;
 
 import com.example.dto.PredictionDto;
+import com.example.entity.Match;
 import com.example.entity.Prediction;
 import com.example.entity.User;
+import com.example.repository.MatchRepository;
 import com.example.repository.PredictionRepository;
 import com.example.repository.UserRepository;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -29,6 +31,9 @@ class PredictionServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    MatchRepository matchRepository;
+
     @InjectMocks
     PredictionService predictionService;
 
@@ -36,17 +41,24 @@ class PredictionServiceTest {
     void uses_repositories_to_save_a_prediction() {
         // given ...
         long userId = 1L;
+        long matchId = 1L;
+
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(new User(userId)));
 
-        PredictionDto predictionDto = PredictionDto.builder()
+        when(matchRepository.findById(anyLong()))
+                .thenReturn(Optional.of(new Match(matchId)));
+
+        PredictionDto predictionToSave = PredictionDto.builder()
                 .predictedWinner("Brentford")
                 .userId(userId)
+                .matchId(matchId)
                 .build();
         // when ...
-        predictionService.save(predictionDto);
+        predictionService.save(predictionToSave);
 
         // then ...
+        verify(matchRepository).findById(matchId);
         verify(userRepository).findById(userId);
         verify(predictionRepository).save(any(Prediction.class));
     }

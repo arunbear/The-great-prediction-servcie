@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.dto.PredictionDto;
+import com.example.entity.Match;
 import com.example.entity.Prediction;
 import com.example.entity.User;
 import com.example.service.PredictionService;
@@ -42,6 +43,7 @@ class PredictionControllerTest {
                 .id(1L)
                 .predictedWinner("ABC")
                 .user(new User(1L))
+                .match(new Match(1L))
                 .build();
 
         when(predictionService.save(any(PredictionDto.class)))

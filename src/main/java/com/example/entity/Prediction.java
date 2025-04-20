@@ -24,11 +24,16 @@ public class Prediction {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "match_id")
+    private Match match;
+
     public PredictionDto toDto() {
         return PredictionDto.builder()
                 .predictionId(id)
                 .predictedWinner(predictedWinner)
                 .userId(user.getId())
+                .matchId(match.getId())
                 .build();
     }
 }
