@@ -32,7 +32,9 @@ class GreatPredictionServiceApplicationTests {
     @Test
     void accepts_a_prediction_creation_message() throws JSONException {
         var predictionToCreate = new JSONObject()
-            .put("predictedWinner", "Brentford");
+            .put("predictedWinner", "Brentford")
+            .put("userId", 1)
+            ;
 
         createPrediction(predictionToCreate)
             .then()
@@ -44,7 +46,9 @@ class GreatPredictionServiceApplicationTests {
     @Test
     void can_create_a_prediction() throws JSONException {
         var predictionToCreate = new JSONObject()
-                .put("predictedWinner", "Brentford");
+                .put("predictedWinner", "Brentford")
+                .put("userId", 1)
+                ;
 
         var creationResponse = createPrediction(predictionToCreate);
 
@@ -64,6 +68,8 @@ class GreatPredictionServiceApplicationTests {
                 .isGreaterThan(0);
         then(retrievedPredictionDto.predictedWinner())
                 .isEqualTo(predictionToCreate.getString("predictedWinner"));
+        then(retrievedPredictionDto.userId())
+                .isEqualTo(predictionToCreate.getLong("userId"));
     }
 
     @Test
