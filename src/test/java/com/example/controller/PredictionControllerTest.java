@@ -4,6 +4,7 @@ import com.example.dto.PredictionDto;
 import com.example.entity.Prediction;
 import com.example.entity.User;
 import com.example.service.PredictionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ class PredictionControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockitoBean
     private PredictionService predictionService;
 
@@ -46,7 +50,7 @@ class PredictionControllerTest {
         // when ...
         mockMvc.perform(
             post("/prediction")
-                .content("{}")
+                .content(objectMapper.writeValueAsString(prediction))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.predictionId").value(prediction.getId()))

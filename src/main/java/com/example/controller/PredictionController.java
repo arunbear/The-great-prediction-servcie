@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.dto.PredictionDto;
 import com.example.entity.Prediction;
 import com.example.service.PredictionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class PredictionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PredictionDto> create(@RequestBody PredictionDto predictionDto) {
+    public ResponseEntity<PredictionDto> create(@Valid @RequestBody PredictionDto predictionDto) {
 
         var savedPrediction = predictionService.save(predictionDto);
 
