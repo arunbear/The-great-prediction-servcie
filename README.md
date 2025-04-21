@@ -33,9 +33,13 @@ Matches have a start time
 
 ### Step 7
 
-Predictions can be updated, but only if the related match hasn't started yet.
+Predictions can be updated.
 
 ### Step 8
+
+Predictions can be updated, but only if the related match hasn't started yet.
+
+### Step 9
 
 A match is between two teams
 
