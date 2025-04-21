@@ -1,16 +1,15 @@
 package com.example;
 
 import com.example.dto.PredictionDto;
+import com.example.repository.PredictionRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
@@ -28,6 +27,15 @@ class GreatPredictionServiceApplicationTests {
     public void setUp() {
         RestAssured.port = localServerPort;
     }
+
+    @Autowired
+    PredictionRepository predictionRepository;
+
+    @AfterEach
+    public void tearDown() {
+        predictionRepository.deleteAll();
+    }
+
 
     @Test
     void accepts_a_prediction_creation_message() throws JSONException {
@@ -77,7 +85,49 @@ class GreatPredictionServiceApplicationTests {
     }
 
     @Test
-    void contextLoads() {
+    void can_find_all_predictions_for_a_given_user() throws JSONException {
+        // given ...
+        long userId  = 1L;
+        long matchId = 1L;
+        var prediction1 = new JSONObject()
+                .put("predictedWinner", "Brentford")
+                .put("userId", userId)
+                .put("matchId", matchId);
+                ;
+        var prediction2 = new JSONObject()
+                .put("predictedWinner", "Chelsea")
+                .put("userId", userId)
+                .put("matchId", matchId);
+                ;
+        createPrediction(prediction1);
+        createPrediction(prediction2);
+
+        // when ...
+        PredictionDto[] retrievedPredictions = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .get("/user/%d/predictions".formatted(userId))
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(PredictionDto[].class)
+                ;
+
+        then(retrievedPredictions.length).isEqualTo(2);
+
+        final int first  = 0;
+        then(retrievedPredictions[first].predictedWinner()). isEqualTo(prediction1.getString( "predictedWinner"));
+        then(retrievedPredictions[first].userId()).          isEqualTo(prediction1.getLong( "userId"));
+        then(retrievedPredictions[first].matchId()).         isEqualTo(prediction1.getLong( "matchId"));
+
+        final int second = 1;
+        then(retrievedPredictions[second].predictedWinner()). isEqualTo(prediction2.getString( "predictedWinner"));
+        then(retrievedPredictions[second].userId()).          isEqualTo(prediction2.getLong( "userId"));
+        then(retrievedPredictions[second].matchId()).         isEqualTo(prediction2.getLong( "matchId"));
+
+        then(retrievedPredictions[second].predictionId()). isNotEqualTo(retrievedPredictions[first].predictionId());
     }
 
     Response createPrediction(JSONObject jsonObject) {
