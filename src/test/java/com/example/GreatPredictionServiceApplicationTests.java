@@ -85,6 +85,51 @@ class GreatPredictionServiceApplicationTests {
     }
 
     @Test
+    void a_prediction_can_be_updated() throws JSONException {
+        // given ...
+        var prediction = new JSONObject()
+                .put("predictedWinner", "Brentford")
+                .put("userId", 1)
+                .put("matchId", 1)
+                ;
+
+        var creationResponse = createPrediction(prediction);
+
+        // when ...
+        prediction.put("predictedWinner", "Chelsea");
+
+        // use API to update it
+        PredictionDto updateDpredictionDto = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(prediction.toString())
+                .put(creationResponse.header("Location"))
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(PredictionDto.class)
+                ;
+        // fetch it from API
+        PredictionDto retrievedPredictionDto = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .get(creationResponse.header("Location"))
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(PredictionDto.class)
+                ;
+        then(retrievedPredictionDto.predictionId())    .isEqualTo(updateDpredictionDto.predictionId());
+        then(retrievedPredictionDto.predictedWinner()) .isEqualTo(prediction.getString("predictedWinner"));
+        then(retrievedPredictionDto.userId())          .isEqualTo(prediction.getLong("userId"));
+        then(retrievedPredictionDto.matchId())         .isEqualTo(prediction.getLong("matchId"));
+    }
+
+    @Test
     void can_find_all_predictions_for_a_given_user() throws JSONException {
         // given ...
         long userId  = 1L;

@@ -7,6 +7,8 @@ import com.example.entity.User;
 import com.example.repository.MatchRepository;
 import com.example.repository.PredictionRepository;
 import com.example.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ public class PredictionService {
     final PredictionRepository predictionRepository;
     final UserRepository userRepository;
     final MatchRepository matchRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(PredictionService.class);
 
     @Autowired
     public PredictionService(PredictionRepository predictionRepository, UserRepository userRepository, MatchRepository matchRepository) {
@@ -53,5 +57,20 @@ public class PredictionService {
                 .stream()
                 .map(Prediction::toDto)
                 .toList();
+    }
+
+    public Optional<Prediction> update(long predictionId, PredictionDto predictionDto) {
+        Optional<Prediction> predictions = predictionRepository.findById(predictionId);
+        if (predictions.isEmpty()) {
+            logger.warn("Prediction with id {} not found", predictionId);
+            return predictions;
+        }
+
+        Prediction prediction = predictions.get();
+        prediction.setPredictedWinner(predictionDto.predictedWinner());
+
+        // todo update match as well
+
+        return Optional.of(predictionRepository.save(prediction));
     }
 }

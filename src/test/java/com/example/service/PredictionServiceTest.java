@@ -84,4 +84,18 @@ class PredictionServiceTest {
 
         verify(predictionRepository).findByUser_Id(userId);
     }
+
+    @Test
+    void uses_a_repository_to_update_a_prediction() {
+        // given ...
+        long predictionId = 1L;
+        when(predictionRepository.findById(predictionId)).      thenReturn(Optional.of(new Prediction()));
+        when(predictionRepository.save(any(Prediction.class))). thenReturn(new Prediction());
+
+        // when ...
+        predictionService.update(predictionId, PredictionDto.builder().build());
+
+        verify(predictionRepository).findById(predictionId);
+        verify(predictionRepository).save(any(Prediction.class));
+    }
 }

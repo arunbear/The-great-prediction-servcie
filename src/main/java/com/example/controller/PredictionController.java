@@ -49,6 +49,15 @@ public class PredictionController {
 
     }
 
+    @PutMapping("/prediction/{id}")
+    public ResponseEntity<PredictionDto> updatePrediction(@PathVariable long id, @Valid @RequestBody PredictionDto predictionDto) {
+        Optional<Prediction> predictions = predictionService.update(id, predictionDto);
+
+        return predictions
+                .map(prediction -> ResponseEntity.ok(prediction.toDto()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/user/{userId}/predictions")
     public ResponseEntity<List<PredictionDto>> getPredictionsForUser(@PathVariable long userId) {
         List<PredictionDto> predictions = predictionService.findByUser(userId);
