@@ -72,4 +72,16 @@ class PredictionControllerTest {
         verify(predictionService).findById(predictionId);
 
     }
+
+    @Test
+    void uses_predictionService_to_find_user_predictions() throws Exception {
+        // given ...
+        long userId = 1;
+
+        // when ...
+        mockMvc.perform( get("/user/%s/predictions".formatted(userId)) );
+
+        verify(predictionService).findByUser(userId);
+
+    }
 }

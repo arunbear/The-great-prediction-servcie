@@ -10,6 +10,7 @@ import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,5 +45,13 @@ public class PredictionService {
 
     public Optional<Prediction> findById(long predictionId) {
         return predictionRepository.findById(predictionId);
+    }
+
+    public List<PredictionDto> findByUser(long userId) {
+        List<Prediction> predictions = predictionRepository.findByUser_Id(userId);
+        return predictions
+                .stream()
+                .map(Prediction::toDto)
+                .toList();
     }
 }

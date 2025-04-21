@@ -73,4 +73,15 @@ class PredictionServiceTest {
 
         verify(predictionRepository).findById(predictionId);
     }
+
+    @Test
+    void uses_a_repository_to_find_user_predictions() {
+        // given ...
+        long userId = 1L;
+
+        // when ...
+        predictionService.findByUser(userId);
+
+        verify(predictionRepository).findByUser_Id(userId);
+    }
 }

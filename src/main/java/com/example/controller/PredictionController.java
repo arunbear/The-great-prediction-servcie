@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/prediction")
 public class PredictionController {
     private final PredictionService predictionService;
 
@@ -23,7 +23,7 @@ public class PredictionController {
         this.predictionService = predictionService;
     }
 
-    @PostMapping
+    @PostMapping("/prediction")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<PredictionDto> create(@Valid @RequestBody PredictionDto predictionDto) {
 
@@ -39,7 +39,7 @@ public class PredictionController {
                 .body(savedPrediction.toDto());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/prediction/{id}")
     public ResponseEntity<PredictionDto> getPredictionById(@PathVariable long id) {
         Optional<Prediction> predictions = predictionService.findById(id);
 
@@ -47,6 +47,13 @@ public class PredictionController {
                 .map(prediction -> ResponseEntity.ok(prediction.toDto()))
                 .orElseGet(() -> ResponseEntity.notFound().build());
 
+    }
+
+    @GetMapping("/user/{userId}/predictions")
+    public ResponseEntity<List<PredictionDto>> getPredictionsForUser(@PathVariable long userId) {
+        List<PredictionDto> predictions = predictionService.findByUser(userId);
+
+        return ResponseEntity.ok(predictions);
     }
 
 }
