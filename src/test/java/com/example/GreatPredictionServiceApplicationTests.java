@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.dto.PredictionDto;
 import com.example.dto.PredictionResponse;
+import com.example.dto.Status;
 import com.example.repository.PredictionRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -161,6 +162,8 @@ class GreatPredictionServiceApplicationTests {
                 .extract()
                 .as(PredictionResponse.class)
                 ;
+        then(predictionResponse.status()). isEqualTo(Status.NOT_UPDATED);
+
         // fetch it from API
         PredictionDto retrievedPredictionDto = RestAssured
                 .given()
