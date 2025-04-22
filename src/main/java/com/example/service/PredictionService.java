@@ -69,8 +69,6 @@ public class PredictionService {
         Prediction prediction = predictions.get();
         prediction.setPredictedWinner(predictionDto.predictedWinner());
 
-        // todo update match as well
-
         return Optional.of(predictionRepository.save(prediction));
     }
 }

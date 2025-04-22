@@ -96,15 +96,15 @@ class GreatPredictionServiceApplicationTests {
         var creationResponse = createPrediction(prediction);
 
         // when ...
-        prediction.put("predictedWinner", "Chelsea");
+        var predictionPatch = new JSONObject().put("predictedWinner", "Chelsea");
 
         // use API to update it
         PredictionDto updateDpredictionDto = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
-                .body(prediction.toString())
-                .put(creationResponse.header("Location"))
+                .body(predictionPatch.toString())
+                .patch(creationResponse.header("Location"))
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.SC_OK)
@@ -123,8 +123,8 @@ class GreatPredictionServiceApplicationTests {
                 .extract()
                 .as(PredictionDto.class)
                 ;
+        then(retrievedPredictionDto.predictedWinner()) .isEqualTo(predictionPatch.getString("predictedWinner"));
         then(retrievedPredictionDto.predictionId())    .isEqualTo(updateDpredictionDto.predictionId());
-        then(retrievedPredictionDto.predictedWinner()) .isEqualTo(prediction.getString("predictedWinner"));
         then(retrievedPredictionDto.userId())          .isEqualTo(prediction.getLong("userId"));
         then(retrievedPredictionDto.matchId())         .isEqualTo(prediction.getLong("matchId"));
     }

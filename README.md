@@ -35,6 +35,8 @@ Matches have a start time
 
 Predictions can be updated.
 
+Assume only the predicted winner can be changed.
+
 ### Step 8
 
 Predictions can be updated, but only if the related match hasn't started yet.

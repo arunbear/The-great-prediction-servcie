@@ -85,7 +85,7 @@ class PredictionControllerTest {
 
         // when ...
         mockMvc.perform(
-                put("/prediction/%s".formatted(predictionId))
+                patch("/prediction/%s".formatted(predictionId))
                     .content(objectMapper.writeValueAsString(prediction))
                     .contentType(MediaType.APPLICATION_JSON))
         ;

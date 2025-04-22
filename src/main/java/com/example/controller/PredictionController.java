@@ -49,7 +49,7 @@ public class PredictionController {
 
     }
 
-    @PutMapping("/prediction/{id}")
+    @PatchMapping("/prediction/{id}")
     public ResponseEntity<PredictionDto> updatePrediction(@PathVariable long id, @Valid @RequestBody PredictionDto predictionDto) {
         Optional<Prediction> predictions = predictionService.update(id, predictionDto);
 
