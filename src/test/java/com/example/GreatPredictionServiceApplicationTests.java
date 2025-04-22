@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.dto.PredictionDto;
+import com.example.dto.PredictionResponse;
 import com.example.repository.PredictionRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -42,6 +43,7 @@ class GreatPredictionServiceApplicationTests {
         var predictionToCreate = new JSONObject()
             .put("predictedWinner", "Brentford")
             .put("userId", 1)
+            .put("matchId", 1)
             ;
 
         createPrediction(predictionToCreate)
@@ -99,7 +101,7 @@ class GreatPredictionServiceApplicationTests {
         var predictionPatch = new JSONObject().put("predictedWinner", "Chelsea");
 
         // use API to update it
-        PredictionDto updateDpredictionDto = RestAssured
+        PredictionResponse patchResponse = RestAssured
                 .given()
                 .log().all()
                 .contentType(ContentType.JSON)
@@ -109,7 +111,7 @@ class GreatPredictionServiceApplicationTests {
                 .log().all()
                 .statusCode(HttpStatus.SC_OK)
                 .extract()
-                .as(PredictionDto.class)
+                .as(PredictionResponse.class)
                 ;
         // fetch it from API
         PredictionDto retrievedPredictionDto = RestAssured
@@ -124,9 +126,56 @@ class GreatPredictionServiceApplicationTests {
                 .as(PredictionDto.class)
                 ;
         then(retrievedPredictionDto.predictedWinner()) .isEqualTo(predictionPatch.getString("predictedWinner"));
-        then(retrievedPredictionDto.predictionId())    .isEqualTo(updateDpredictionDto.predictionId());
+        then(retrievedPredictionDto.predictionId())    .isEqualTo(patchResponse.predictionDto().predictionId());
         then(retrievedPredictionDto.userId())          .isEqualTo(prediction.getLong("userId"));
         then(retrievedPredictionDto.matchId())         .isEqualTo(prediction.getLong("matchId"));
+    }
+
+    @Test
+    void a_closed_prediction_cannot_be_updated() throws JSONException {
+        // given ...
+        long endedMatchId = 2L;
+
+        var prediction = new JSONObject()
+                .put("predictedWinner", "Brentford")
+                .put("userId", 1)
+                .put("matchId", endedMatchId)
+                ;
+
+        var creationResponse = createPrediction(prediction);
+        creationResponse.then().log().all();
+
+        // when ...
+        var predictionPatch = new JSONObject().put("predictedWinner", "Chelsea");
+
+        // use API to update it
+        PredictionResponse predictionResponse = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(predictionPatch.toString())
+                .patch(creationResponse.header("Location"))
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+                .extract()
+                .as(PredictionResponse.class)
+                ;
+        // fetch it from API
+        PredictionDto retrievedPredictionDto = RestAssured
+                .given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .get(creationResponse.header("Location"))
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(PredictionDto.class)
+                ;
+        then(retrievedPredictionDto.predictedWinner()) .isEqualTo(prediction.getString("predictedWinner"));
+        then(retrievedPredictionDto.userId())          .isEqualTo(prediction.getLong("userId"));
+        then(retrievedPredictionDto.matchId())         .isEqualTo(endedMatchId);
     }
 
     @Test
