@@ -1,11 +1,14 @@
 package com.example.controller;
 
 import com.example.dto.PredictionDto;
+import com.example.dto.PredictionResponse;
+import com.example.dto.Status;
 import com.example.entity.Match;
 import com.example.entity.Prediction;
 import com.example.entity.User;
 import com.example.service.PredictionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -54,7 +57,7 @@ class PredictionControllerTest {
         // when ...
         mockMvc.perform(
             post("/prediction")
-                .content(objectMapper.writeValueAsString(prediction))
+                .content(objectMapper.writeValueAsString(prediction.toDto()))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.predictionId").value(prediction.getId()))
@@ -79,14 +82,16 @@ class PredictionControllerTest {
     void uses_predictionService_to_update_a_prediction() throws Exception {
         // given ...
         long predictionId = 1;
-        var prediction = Prediction.builder()
-                .predictedWinner("ABC")
-                .build();
+        var predictionPatch = new JSONObject().put("predictedWinner", "Chelsea");
+
+        when(predictionService.update(anyLong(), any(PredictionDto.class)))
+                .thenReturn(PredictionResponse.builder()
+                        .status(Status.SUCCESS).build());
 
         // when ...
         mockMvc.perform(
                 patch("/prediction/%s".formatted(predictionId))
-                    .content(objectMapper.writeValueAsString(prediction))
+                    .content(predictionPatch.toString())
                     .contentType(MediaType.APPLICATION_JSON))
         ;
 

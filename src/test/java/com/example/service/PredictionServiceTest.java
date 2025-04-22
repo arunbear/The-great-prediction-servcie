@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -89,8 +90,18 @@ class PredictionServiceTest {
     void uses_a_repository_to_update_a_prediction() {
         // given ...
         long predictionId = 1L;
-        when(predictionRepository.findById(predictionId)).      thenReturn(Optional.of(new Prediction()));
-        when(predictionRepository.save(any(Prediction.class))). thenReturn(new Prediction());
+        Match match = Match.builder()
+                .startTime(LocalDateTime.MAX)
+                .id(1L)
+                .build();
+        Prediction prediction = Prediction.builder()
+                .id(predictionId)
+                .match(match)
+                .user(new User(1L))
+                .build();
+
+        when(predictionRepository.findById(predictionId)).      thenReturn(Optional.of(prediction));
+        when(predictionRepository.save(any(Prediction.class))). thenReturn(prediction);
 
         // when ...
         predictionService.update(predictionId, PredictionDto.builder().build());

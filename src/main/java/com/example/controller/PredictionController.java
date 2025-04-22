@@ -1,9 +1,12 @@
 package com.example.controller;
 
 import com.example.dto.PredictionDto;
+import com.example.dto.PredictionResponse;
 import com.example.entity.Prediction;
 import com.example.service.PredictionService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ import java.util.Optional;
 @RestController
 public class PredictionController {
     private final PredictionService predictionService;
+
+    private static final Logger logger = LoggerFactory.getLogger(PredictionController.class);
 
     @Autowired
     public PredictionController(PredictionService predictionService) {
@@ -50,12 +55,15 @@ public class PredictionController {
     }
 
     @PatchMapping("/prediction/{id}")
-    public ResponseEntity<PredictionDto> updatePrediction(@PathVariable long id, @Valid @RequestBody PredictionDto predictionDto) {
-        Optional<Prediction> predictions = predictionService.update(id, predictionDto);
+    public ResponseEntity<PredictionResponse> updatePrediction(@PathVariable long id, @Valid @RequestBody PredictionDto predictionDto) {
+        PredictionResponse response = predictionService.update(id, predictionDto);
+        logger.info(response.toString());
 
-        return predictions
-                .map(prediction -> ResponseEntity.ok(prediction.toDto()))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return switch (response.status()) {
+            case SUCCESS     -> ResponseEntity.ok(response);
+            case NOT_FOUND   -> ResponseEntity.notFound().build();
+            case NOT_UPDATED -> ResponseEntity.unprocessableEntity().body(response);
+        };
     }
 
     @GetMapping("/user/{userId}/predictions")

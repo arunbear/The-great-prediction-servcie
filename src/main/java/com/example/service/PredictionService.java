@@ -1,6 +1,8 @@
 package com.example.service;
 
 import com.example.dto.PredictionDto;
+import com.example.dto.PredictionResponse;
+import com.example.dto.Status;
 import com.example.entity.Match;
 import com.example.entity.Prediction;
 import com.example.entity.User;
@@ -36,7 +38,7 @@ public class PredictionService {
         User user = users.orElseThrow(); // todo more appropriate error type
 
         // find related match
-        Optional<Match> matches = matchRepository.findById(predictionDto.userId());
+        Optional<Match> matches = matchRepository.findById(predictionDto.matchId());
         Match match = matches.orElseThrow(); // todo more appropriate error type
 
         Prediction prediction = new Prediction();
@@ -59,16 +61,26 @@ public class PredictionService {
                 .toList();
     }
 
-    public Optional<Prediction> update(long predictionId, PredictionDto predictionDto) {
+    public PredictionResponse update(long predictionId, PredictionDto predictionDto) {
+        PredictionResponse response = new PredictionResponse(predictionDto, Status.SUCCESS);
+
         Optional<Prediction> predictions = predictionRepository.findById(predictionId);
         if (predictions.isEmpty()) {
             logger.warn("Prediction with id {} not found", predictionId);
-            return predictions;
+            return response.withStatus(Status.NOT_FOUND);
         }
 
         Prediction prediction = predictions.get();
-        prediction.setPredictedWinner(predictionDto.predictedWinner());
 
-        return Optional.of(predictionRepository.save(prediction));
+        if (prediction.isOpen()) {
+            prediction.setPredictedWinner(predictionDto.predictedWinner());
+            return response
+                    .withStatus(Status.SUCCESS)
+                    .withPredictionDto(predictionRepository.save(prediction).toDto());
+        }
+        else {
+            return response.withStatus(Status.NOT_UPDATED);
+        }
+
     }
 }
