@@ -43,8 +43,23 @@ Predictions can be updated, but only if the related match hasn't started yet.
 
 ### Step 9
 
-A match is between two teams
+Add Docker support to make the service easier to run locally.
+
+### Step 10
+
+Add some system diagrams.
+
+### Step 11
+A match is between two teams. This would allow the predicted winner to be validated.
 
 Assume that
 
 * teams already exist in the system
+
+### Step 12
+
+Add tests for unhappy paths, such as non-existent matches or users.
+
+### Step 13
+
+Require API users to be authenticated e.g. using API keys.
