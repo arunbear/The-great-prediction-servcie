@@ -1,6 +1,6 @@
 ## Development notes
 
-The service has been developed in small increments, with testing at each step.
+The service has been developed in small increments, with [testing](Testing.md) at each step.
 
 ### Step 1
 
