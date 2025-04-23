@@ -1,5 +1,7 @@
 ## Development notes
 
+The service has been developed in small increments, with testing at each step.
+
 ### Step 1
 
 Service accepts a minimal creation message (only the predicted winner)
@@ -49,7 +51,10 @@ Add Docker support to make the service easier to run locally.
 
 Add some system diagrams.
 
+## Further work that could be done
+
 ### Step 11
+
 A match is between two teams. This would allow the predicted winner to be validated.
 
 Assume that
