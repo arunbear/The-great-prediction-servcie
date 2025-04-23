@@ -51,6 +51,26 @@ Add Docker support to make the service easier to run locally.
 
 Add some system diagrams.
 
+## System diagram
+
+Showing components and message flows
+
+```mermaid
+sequenceDiagram
+    API-client->>API: POST /prediction
+    API-->>API-client: HTTP Response
+    API-client->>API: GET /prediction/{id}
+    API-->>API-client: HTTP Response
+    API-client->>API: GET /user/{id}/predictions
+    API-->>API-client: HTTP Response
+    API-client->>API: PUT /prediction/{id}
+    API-->>API-client: HTTP Response
+    API->>Controller: 
+    Controller->>Service: 
+    Service->>Repository: 
+    Repository->>DB: SQL
+```
+
 ## Further work that could be done
 
 ### Step 11
