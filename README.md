@@ -10,6 +10,8 @@ Service accepts a minimal creation message (only the predicted winner)
 
 Can create a prediction and retrieve it.
 
+To properly test creation, also provide an API to retrieve a prediction.
+
 ### Step 3
 
 Predictions must be associated with a user.
@@ -31,7 +33,9 @@ Return all predictions for a given user
 
 ### Step 6
 
-Matches have a start time
+Matches have a start time.
+
+This provides a way to tell if a prediction can be considered closed, and therefore not updatable. 
 
 ### Step 7
 
