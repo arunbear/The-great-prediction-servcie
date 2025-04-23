@@ -75,6 +75,27 @@ sequenceDiagram
     Repository->>DB: SQL
 ```
 
+### JPA Entities
+
+```mermaid
+classDiagram
+direction BT
+class Match {
+    Long  id
+    LocalDateTime  startTime
+}
+class Prediction {
+    Long  id
+    String  predictedWinner
+}
+class User {
+    Long  id
+}
+
+Prediction "0..*" --> "0..1" Match 
+Prediction "0..*" --> "0..1" User 
+```
+
 ## Further work that could be done
 
 ### Step 11
