@@ -63,3 +63,19 @@ Add tests for unhappy paths, such as non-existent matches or users.
 ### Step 13
 
 Require API users to be authenticated e.g. using API keys.
+
+## Running the service
+
+### With Docker
+
+To run the service via Docker, cd to the project directory and run
+
+`docker compose up --build`
+
+Then in another terminal, go to the examples folder
+
+`cd examples`
+
+Run the example scripts
+
+A sample transcript is [included](examples/examples.md)
