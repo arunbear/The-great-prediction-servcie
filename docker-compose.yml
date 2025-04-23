@@ -1,0 +1,8 @@
+services:
+  message-server:
+    container_name: predictor
+    build:
+      dockerfile: Dockerfile
+    image: predictor:latest
+    ports:
+      - "8080:8080"
