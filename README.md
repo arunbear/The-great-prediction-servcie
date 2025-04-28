@@ -67,7 +67,7 @@ sequenceDiagram
     API-->>API-client: HTTP Response
     API-client->>API: GET /user/{id}/predictions
     API-->>API-client: HTTP Response
-    API-client->>API: PUT /prediction/{id}
+    API-client->>API: PATCH /prediction/{id}
     API-->>API-client: HTTP Response
     API->>Controller: 
     Controller->>Service: 
